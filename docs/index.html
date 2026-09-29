@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#AFCE8D">
+<meta name="robots" content="noindex">
+<title>장비대장</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="phone">
+<!-- 핸드폰 판: 화면은 PC 와 같은 app.js, 서버 대신 GitHub 우편함과 이야기하는 phone.js 를 먼저 읽습니다. 자료는 이 페이지에 없습니다. -->
+<div class="shell" id="shell" hidden>
+  <aside class="side">
+    <a class="brand" href="#/dash">
+      <span class="org" id="orgName">여주시농업기술센터</span>
+      <span class="title">장비대장</span>
+      <span class="roomtitle" id="roomTitle" hidden></span>
+    </a>
+    <label class="roompick"><span>보는 방</span><select id="roomSel"></select></label>
+    <nav>
+      <a href="#/dash" data-nav="dash">대시보드</a>
+      <a href="#/list" data-nav="list">장비</a>
+      <a href="#/places" data-nav="places">위치</a>
+      <a href="#/calendar" data-nav="calendar">일정</a>
+      <a href="#/repairs" data-nav="repairs">수리</a>
+      <a href="#/rooms" data-nav="rooms">방</a>
+      <a href="#/settings" data-nav="settings" id="navSettings">설정</a>
+    </nav>
+    <div class="me">
+      <span class="me-label">로그인</span>
+      <b id="meName"></b>
+      <div class="me-btns"><button id="pwBtn" class="link">비밀번호</button><button id="logoutBtn" class="link">로그아웃</button></div>
+      <div id="syncBadge" class="sync-badge" hidden></div>
+    </div>
+  </aside>
+  <main id="app"></main>
+</div>
+<div id="gate" class="gate" hidden></div>
+<div id="modal" class="modal" hidden></div>
+<div id="toast" class="toast" hidden></div>
+<script src="phone.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+// 장비 수리 대장 핸드폰 앱(껍데기) — 페이지를 여는 WebView 하나입니다
+plugins {
+    id 'com.android.application'
+}
+
+// 도장(서명 열쇠)은 GitHub 비밀 칸에서 옵니다 (KEYSTORE_B64 → app/equip.jks, KEYSTORE_PASSWORD)
+def ksFile = System.getenv('KEYSTORE_FILE')
+def ksPass = System.getenv('KEYSTORE_PASSWORD')
+def verCode = (System.getenv('APP_VERSION_CODE') ?: '1') as Integer
+// 앱이 여는 주소: 이 저장소의 GitHub Pages (저장소 이름을 바꿔도 저절로 맞춰짐)
+def repoFull = System.getenv('GITHUB_REPOSITORY') ?: 'owner/equip-phone'
+def homeUrl = "https://${repoFull.split('/')[0].toLowerCase()}.github.io/${repoFull.split('/')[1]}/"
+
+android {
+    namespace 'kr.yeoju.equip'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'kr.yeoju.equip'
+        minSdk 29
+        targetSdk 34
+        versionCode verCode
+        versionName "1.0.${verCode}"
+        buildConfigField 'String', 'HOME_URL', "\"${homeUrl}\""
+    }
+    buildFeatures { buildConfig true }
+    signingConfigs {
+        release {
+            if (ksFile && ksPass) {
+                storeFile file(ksFile)
+                storePassword ksPass
+                keyAlias 'equip'
+                keyPassword ksPass
+                storeType 'PKCS12'
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            if (ksFile && ksPass) signingConfig signingConfigs.release
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation 'androidx.core:core:1.13.1'
+}

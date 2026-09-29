@@ -1,0 +1,9 @@
+# 빌드 산출물·도장은 저장소에 넣지 않습니다
+*.jks
+*.keystore
+*.p12
+build/
+.gradle/
+local.properties
+*.iml
+.idea/

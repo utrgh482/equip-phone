@@ -1,0 +1,4 @@
+// 안드로이드 빌드 도구 판. 바꿀 일 없음
+plugins {
+    id 'com.android.application' version '8.5.2' apply false
+}

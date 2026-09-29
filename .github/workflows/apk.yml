@@ -1,0 +1,67 @@
+# 장비 수리 대장 apk 자동 만들기 — app/ 이 바뀌어 main 에 올라오면(또는 Actions 탭에서 Run workflow) 돌아갑니다.
+# 결과: Releases 에 equip.apk 가 붙습니다. 도장은 저장소 비밀 칸(KEYSTORE_B64 · KEYSTORE_PASSWORD)에서 꺼내 씁니다.
+name: apk
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'app/**'
+      - 'build.gradle'
+      - 'settings.gradle'
+      - 'gradle.properties'
+      - '.github/workflows/apk.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 저장소 받기
+        uses: actions/checkout@v4
+
+      - name: 자바 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Gradle 8.7
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.7'
+
+      - name: 도장 꺼내기
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_B64 }}
+        run: |
+          if [ -z "$KEYSTORE_B64" ]; then echo "::error::비밀 칸 KEYSTORE_B64 가 비어 있습니다 (Settings → Secrets and variables → Actions)"; exit 1; fi
+          echo "$KEYSTORE_B64" | tr -d ' \n\r' | base64 -d > app/equip.jks
+          ls -l app/equip.jks
+
+      - name: apk 만들기 (서명 포함)
+        env:
+          KEYSTORE_FILE: equip.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          APP_VERSION_CODE: ${{ github.run_number }}
+        run: |
+          if [ -z "$KEYSTORE_PASSWORD" ]; then echo "::error::비밀 칸 KEYSTORE_PASSWORD 가 비어 있습니다"; exit 1; fi
+          gradle assembleRelease --no-daemon --warning-mode none
+          ls -l app/build/outputs/apk/release/
+          cp app/build/outputs/apk/release/app-release.apk equip.apk
+
+      - name: 만든 apk 보관 (Actions 화면에서도 내려받기)
+        uses: actions/upload-artifact@v4
+        with:
+          name: equip-apk-${{ github.run_number }}
+          path: equip.apk
+
+      - name: Releases 에 올리기
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="v${{ github.run_number }}"
+          gh release create "$TAG" equip.apk --title "장비 수리 대장 apk $TAG" --notes "핸드폰에서 equip.apk 를 눌러 내려받아 설치하세요. (빌드 번호 ${{ github.run_number }})"

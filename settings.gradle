@@ -1,0 +1,10 @@
+// 장비 수리 대장 핸드폰 앱 — Gradle 설정 (GitHub Actions 가 읽습니다. 손댈 일 없음)
+pluginManagement {
+    repositories { google(); mavenCentral(); gradlePluginPortal() }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories { google(); mavenCentral() }
+}
+rootProject.name = "equip-phone"
+include ':app'

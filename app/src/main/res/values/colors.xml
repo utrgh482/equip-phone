@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="leaf">#AFCE8D</color>
+    <color name="iconbg">#DAEABE</color>   <!-- 앱 아이콘 바탕 (트랙터 그림) -->
+    <color name="ink">#1F2A1C</color>
+    <color name="paper">#F6F8F3</color>
+    <color name="white">#FFFFFF</color>
+</resources>
